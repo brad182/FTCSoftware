@@ -1,1 +1,2 @@
-Our code is under the TeamCode folder
+The location of the code is FTCSoftware/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/
+
