@@ -25,13 +25,18 @@ public class RobotAutonomous extends LinearOpMode {
     public final int distanceDriveToShootingPosition = 20;
     public final int shooterServoPosition = 0;  // the position the servo is at to hit a ring
     public final int resetShooterServoPosition = 1;  // the position the servo is at when it is reset
-    public final double revPlanetaryMotorTicksPerRevolution = 560;  // the ticks per revolution for our motors
+    public final double ticksPerRevolution = 560;  // the ticks per revolution for our motors
+
+    public final int wheelDiameter = 3;
 
     // autonomous values
+
+    // amount strafe to line up with box
     public final double zeroStrafe = 6.0;
     public final double oneStrafe = 6.0;
     public final double fourStrafe = 6.0;
 
+    // amount forward to get to wobble drop spot
     public final double zeroForward = 60.0;  // 5 feet
     public final double oneForward = 60.0;
     public final double fourForward = 60.0;
@@ -42,14 +47,68 @@ public class RobotAutonomous extends LinearOpMode {
         robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);  // turn on encoder mode
-        robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        double circumference = Math.PI * wheelDiameter;
+        double rotationsNeeded = inches / circumference;  // calculate the rotations needed based on the circumference
+        int encoderDrive = (int)(rotationsNeeded * ticksPerRevolution);  // calculate the total ticks, cast to int
+
+        robot.frontLeftMotor.setTargetPosition(encoderDrive);  // set the target position
+        robot.backLeftMotor.setTargetPosition(encoderDrive);
+        robot.frontRightMotor.setTargetPosition(encoderDrive);
+        robot.backRightMotor.setTargetPosition(encoderDrive);
+
+        robot.frontLeftMotor.setPower(1.0);  // set power that will be used, use full speed
+        robot.backLeftMotor.setPower(1.0);
+        robot.frontRightMotor.setPower(1.0);
+        robot.backRightMotor.setPower(1.0);
+
+        robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);  // run to position
+        robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (robot.frontLeftMotor.isBusy() || robot.backLeftMotor.isBusy() || robot.frontRightMotor.isBusy() || robot.backRightMotor.isBusy()) {  // wait
+
+        }
+
+        robot.frontLeftMotor.setPower(0);  // reset power to 0
+        robot.backLeftMotor.setPower(0);
+        robot.frontRightMotor.setPower(0);
+        robot.backRightMotor.setPower(0);
     }
 
     public void driveBackwards (double inches) {  // given a distance, drive the robot backwards
+        robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  // reset encoders to zero
+        robot.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        double circumference = Math.PI * wheelDiameter;
+        double rotationsNeeded = inches / circumference;  // calculate the rotations needed based on the circumference
+        int encoderDrive = (int)(rotationsNeeded * ticksPerRevolution);  // calculate the total ticks, cast to int
+
+        robot.frontLeftMotor.setTargetPosition(-encoderDrive);  // set the target position, use negative because we are driving backwards
+        robot.backLeftMotor.setTargetPosition(-encoderDrive);
+        robot.frontRightMotor.setTargetPosition(-encoderDrive);
+        robot.backRightMotor.setTargetPosition(-encoderDrive);
+
+        robot.frontLeftMotor.setPower(1.0);  // set power that will be used, use full speed
+        robot.backLeftMotor.setPower(1.0);
+        robot.frontRightMotor.setPower(1.0);
+        robot.backRightMotor.setPower(1.0);
+
+        robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);  // run to position
+        robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (robot.frontLeftMotor.isBusy() || robot.backLeftMotor.isBusy() || robot.frontRightMotor.isBusy() || robot.backRightMotor.isBusy()) {  // wait
+
+        }
+
+        robot.frontLeftMotor.setPower(0);  // reset power to 0
+        robot.backLeftMotor.setPower(0);
+        robot.frontRightMotor.setPower(0);
+        robot.backRightMotor.setPower(0);
     }
 
     public void strafeRight (double inches) {  // given a distance, strafe the robot to the right
@@ -102,6 +161,10 @@ public class RobotAutonomous extends LinearOpMode {
         boolean zeroRings = false;  // ring detection
         boolean oneRing = false;
         boolean fourRings = true;
+        robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);  // turn on encoder mode
+        robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         waitForStart();
 
