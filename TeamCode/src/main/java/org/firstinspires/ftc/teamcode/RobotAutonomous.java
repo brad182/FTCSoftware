@@ -22,14 +22,22 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 @Autonomous (name = "Autonomous", group = "Autonomous")
 public class RobotAutonomous extends LinearOpMode {
     RobotHardware robot = new RobotHardware();
+    // driving values
     public final int distanceDriveToShootingPosition = 20;
+
+    // servo values
     public final int shooterServoPosition = 0;  // the position the servo is at to hit a ring
     public final int resetShooterServoPosition = 1;  // the position the servo is at when it is reset
+    public final int wobblePosition = 0;
+    public final int wobbleResetPosition = 1;
+    public final int pause = 50;  // milliseconds
+
+    // motor values
     public final double ticksPerRevolution = 560;  // the ticks per revolution for our motors
-
     public final int wheelDiameter = 3;
-
-    // autonomous values
+    public final double wobbleRotations = 0.5;
+    public final double power = 1.0;
+    public final double shooterPower = 1.0;
 
     // amount strafe to line up with box
     public final double zeroStrafe = 6.0;
@@ -56,10 +64,10 @@ public class RobotAutonomous extends LinearOpMode {
         robot.frontRightMotor.setTargetPosition(encoderDrive);
         robot.backRightMotor.setTargetPosition(encoderDrive);
 
-        robot.frontLeftMotor.setPower(1.0);  // set power that will be used, use full speed
-        robot.backLeftMotor.setPower(1.0);
-        robot.frontRightMotor.setPower(1.0);
-        robot.backRightMotor.setPower(1.0);
+        robot.frontLeftMotor.setPower(power);  // set power that will be used, use full speed
+        robot.backLeftMotor.setPower(power);
+        robot.frontRightMotor.setPower(power);
+        robot.backRightMotor.setPower(power);
 
         robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);  // run to position
         robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -67,7 +75,7 @@ public class RobotAutonomous extends LinearOpMode {
         robot.backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         while (robot.frontLeftMotor.isBusy() || robot.backLeftMotor.isBusy() || robot.frontRightMotor.isBusy() || robot.backRightMotor.isBusy()) {  // wait
-
+            // pause in a while loop while the motors are still running
         }
 
         robot.frontLeftMotor.setPower(0);  // reset power to 0
@@ -91,10 +99,10 @@ public class RobotAutonomous extends LinearOpMode {
         robot.frontRightMotor.setTargetPosition(-encoderDrive);
         robot.backRightMotor.setTargetPosition(-encoderDrive);
 
-        robot.frontLeftMotor.setPower(1.0);  // set power that will be used, use full speed
-        robot.backLeftMotor.setPower(1.0);
-        robot.frontRightMotor.setPower(1.0);
-        robot.backRightMotor.setPower(1.0);
+        robot.frontLeftMotor.setPower(power);  // set power that will be used, use full speed
+        robot.backLeftMotor.setPower(power);
+        robot.frontRightMotor.setPower(power);
+        robot.backRightMotor.setPower(power);
 
         robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);  // run to position
         robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -111,32 +119,135 @@ public class RobotAutonomous extends LinearOpMode {
         robot.backRightMotor.setPower(0);
     }
 
+    /* in mecanum wheels, if the front wheels and the back wheels are
+     going in opposite directions and outwards, the robot goes
+     to the right
+     */
     public void strafeRight (double inches) {  // given a distance, strafe the robot to the right
+        robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  // reset encoders to zero
+        robot.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        double circumference = Math.PI * wheelDiameter;
+        double rotationsNeeded = inches / circumference;  // calculate the rotations needed based on the circumference
+        int encoderDrive = (int) (rotationsNeeded * ticksPerRevolution);  // calculate the total ticks, cast to int
+
+        // the front and the back are going in opposite directions and outwards, will go right
+        robot.frontLeftMotor.setTargetPosition(-encoderDrive);  // set the target position
+        robot.backLeftMotor.setTargetPosition(encoderDrive);
+        robot.frontRightMotor.setTargetPosition(-encoderDrive);
+        robot.backRightMotor.setTargetPosition(encoderDrive);
+
+        robot.frontLeftMotor.setPower(power);  // set power that will be used, use full speed
+        robot.backLeftMotor.setPower(power);
+        robot.frontRightMotor.setPower(power);
+        robot.backRightMotor.setPower(power);
+
+        robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);  // run to position
+        robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (robot.frontLeftMotor.isBusy() || robot.backLeftMotor.isBusy() || robot.frontRightMotor.isBusy() || robot.backRightMotor.isBusy()) {  // wait
+
+        }
+
+        robot.frontLeftMotor.setPower(0);  // reset power to 0
+        robot.backLeftMotor.setPower(0);
+        robot.frontRightMotor.setPower(0);
+        robot.backRightMotor.setPower(0);
     }
 
+    /* in mecanum wheels, if the front wheels and the back wheels are
+     going in opposite directions and inwards, the robot goes
+     to the left
+     */
     public void strafeLeft (double inches) {  // given a distance, strfe the robot to the left
+        robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  // reset encoders to zero
+        robot.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        double circumference = Math.PI * wheelDiameter;
+        double rotationsNeeded = inches / circumference;  // calculate the rotations needed based on the circumference
+        int encoderDrive = (int)(rotationsNeeded * ticksPerRevolution);  // calculate the total ticks, cast to int
+
+        // the front and the back motors are going in opposite directions and inwards, will go left
+        robot.frontLeftMotor.setTargetPosition(encoderDrive);  // set the target position
+        robot.backLeftMotor.setTargetPosition(-encoderDrive);
+        robot.frontRightMotor.setTargetPosition(encoderDrive);
+        robot.backRightMotor.setTargetPosition(-encoderDrive);
+
+        robot.frontLeftMotor.setPower(power);  // set power that will be used, use full speed
+        robot.backLeftMotor.setPower(power);
+        robot.frontRightMotor.setPower(power);
+        robot.backRightMotor.setPower(power);
+
+        robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);  // run to position
+        robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (robot.frontLeftMotor.isBusy() || robot.backLeftMotor.isBusy() || robot.frontRightMotor.isBusy() || robot.backRightMotor.isBusy()) {  // wait
+
+        }
+
+        robot.frontLeftMotor.setPower(0);  // reset power to 0
+        robot.backLeftMotor.setPower(0);
+        robot.frontRightMotor.setPower(0);
+        robot.backRightMotor.setPower(0);
     }
 
     public void shootThreeRings () throws InterruptedException {  // shoots the three rings in the magazine
-        robot.shooterMotor.setPower(1);
+        robot.shooterMotor.setPower(shooterPower);
 
-        robot.magazineServo.setPosition(resetShooterServoPosition);  // first ring
-        wait(20);
-        robot.magazineServo.setPosition(shooterServoPosition);
+        robot.magazineServo.setPosition(shooterServoPosition);  // first ring
+        wait(pause);
+        robot.magazineServo.setPosition(resetShooterServoPosition);
 
-        robot.magazineServo.setPosition(resetShooterServoPosition);  // first ring
-        wait(20);
-        robot.magazineServo.setPosition(shooterServoPosition);
+        robot.magazineServo.setPosition(shooterServoPosition);  // first ring
+        wait(pause);
+        robot.magazineServo.setPosition(resetShooterServoPosition);
 
-        robot.magazineServo.setPosition(resetShooterServoPosition);  // first ring
-        wait(20);
-        robot.magazineServo.setPosition(shooterServoPosition);
+        robot.magazineServo.setPosition(shooterServoPosition);  // first ring
+        wait(pause);
+        robot.magazineServo.setPosition(resetShooterServoPosition);
+    }
+
+    public void releaseWobble () {
+
     }
 
     public void dropWobble () {  // when at position, drop the wobble
+        robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  // reset encoders to zero
+        robot.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        int encoderDrive = (int) (wobbleRotations * ticksPerRevolution);  // calculate the total ticks, cast to int
+
+        // the front and the back are going in opposite directions and outwards, will go right
+        robot.wobbleMotor.setTargetPosition(encoderDrive);  // set the target position
+
+        robot.frontLeftMotor.setPower(power);  // set power that will be used, use full speed
+        robot.backLeftMotor.setPower(power);
+        robot.frontRightMotor.setPower(power);
+        robot.backRightMotor.setPower(power);
+
+        robot.wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);  // run to position
+
+        releaseWobble();
+
+        robot.wobbleMotor.setTargetPosition(0);  // reset
+
+        robot.wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (robot.wobbleMotor.isBusy()) {  // wait
+
+        }
+
+        robot.wobbleMotor.setPower(0);  // reset power to 0
     }
 
     public void autonomousZeroRings () {  // deliver wobble to zero box
@@ -169,7 +280,7 @@ public class RobotAutonomous extends LinearOpMode {
         waitForStart();
 
         driveForward(distanceDriveToShootingPosition);  // drive forward to get to the shooting location
-        shootThreeRings();  // shoot three rings
+        shootThreeRings();  // shoot three rings, same for all three autons
 
         if (zeroRings) {  // zero rings
             autonomousZeroRings();
