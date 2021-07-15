@@ -21,19 +21,17 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 @Autonomous (name = "Autonomous", group = "Autonomous")
 public class RobotAutonomous extends LinearOpMode {
-    RobotHardware robot = new RobotHardware();
+    static RobotHardware robot = new RobotHardware();
     // driving values
     public final int distanceDriveToShootingPosition = 20;
 
     // servo values
     public final int shooterServoPosition = 0;  // the position the servo is at to hit a ring
     public final int resetShooterServoPosition = 1;  // the position the servo is at when it is reset
-    public final int wobblePosition = 0;
-    public final int wobbleResetPosition = 1;
     public final int pause = 50;  // milliseconds
 
     // motor values
-    public final double ticksPerRevolution = 560;  // the ticks per revolution for our motors
+    public final double ticksPerRevolution = 537.6;  // the ticks per revolution for our motors (HEX Planetary 20:1)
     public final int wheelDiameter = 3;
     public final double wobbleRotations = 0.5;
     public final double power = 1.0;
@@ -57,7 +55,7 @@ public class RobotAutonomous extends LinearOpMode {
 
         double circumference = Math.PI * wheelDiameter;
         double rotationsNeeded = inches / circumference;  // calculate the rotations needed based on the circumference
-        int encoderDrive = (int)(rotationsNeeded * ticksPerRevolution);  // calculate the total ticks, cast to int
+        int encoderDrive = (int) (rotationsNeeded * ticksPerRevolution);  // calculate the total ticks, cast to int
 
         robot.frontLeftMotor.setTargetPosition(encoderDrive);  // set the target position
         robot.backLeftMotor.setTargetPosition(encoderDrive);
@@ -190,7 +188,7 @@ public class RobotAutonomous extends LinearOpMode {
         robot.backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         while (robot.frontLeftMotor.isBusy() || robot.backLeftMotor.isBusy() || robot.frontRightMotor.isBusy() || robot.backRightMotor.isBusy()) {  // wait
-
+            // pause while motors are running
         }
 
         robot.frontLeftMotor.setPower(0);  // reset power to 0
@@ -206,11 +204,11 @@ public class RobotAutonomous extends LinearOpMode {
         wait(pause);
         robot.magazineServo.setPosition(resetShooterServoPosition);
 
-        robot.magazineServo.setPosition(shooterServoPosition);  // first ring
+        robot.magazineServo.setPosition(shooterServoPosition);  // second ring
         wait(pause);
         robot.magazineServo.setPosition(resetShooterServoPosition);
 
-        robot.magazineServo.setPosition(shooterServoPosition);  // first ring
+        robot.magazineServo.setPosition(shooterServoPosition);  // third ring
         wait(pause);
         robot.magazineServo.setPosition(resetShooterServoPosition);
     }
@@ -254,6 +252,8 @@ public class RobotAutonomous extends LinearOpMode {
         strafeRight(zeroStrafe);  // align with box
         driveForward(zeroForward);  // drive to wobble drop spot
         dropWobble();  // drop the wobble
+        // get second wobble (if doing two wobbles)
+        driveBackwards(10);  // drive to line
     }
 
     public void autonomousOneRing () {  // deliver wobble to one box
@@ -268,14 +268,22 @@ public class RobotAutonomous extends LinearOpMode {
         dropWobble();  // drop the wobble
     }
 
-    public void runOpMode() throws InterruptedException {
-        boolean zeroRings = false;  // ring detection
-        boolean oneRing = false;
-        boolean fourRings = true;
+    static void initialize () {
         robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);  // turn on encoder mode
         robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.wobbleMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        robot.shooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // does not use encoders
+    }
+
+    public void runOpMode() throws InterruptedException {
+        boolean zeroRings = false;  // ring detection, use boolean values as placeholders for now
+        boolean oneRing = false;
+        boolean fourRings = true;
+
+        initialize();
 
         waitForStart();
 
@@ -288,7 +296,7 @@ public class RobotAutonomous extends LinearOpMode {
         else if (oneRing) {  // one ring
             autonomousOneRing();
         }
-        else {  // four rings
+        else if (fourRings){  // four rings
             autonomousFourRings();
         }
     }
