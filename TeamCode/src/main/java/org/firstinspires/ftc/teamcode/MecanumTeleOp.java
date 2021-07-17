@@ -33,6 +33,7 @@ public class MecanumTeleOp extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        robot.init(hardwareMap);
         telemetry.addData("Program", "Started");
         telemetry.update();
 

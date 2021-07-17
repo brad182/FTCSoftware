@@ -22,25 +22,25 @@ public class RobotHardware { // the hardware map
     public Servo clawServo2 = null;
 
     public ElapsedTime runtime = new ElapsedTime();
-    HardwareMap hardwareMap = null;
+    HardwareMap hwMap = null;
 
     public RobotHardware () { // constructor
-        init (hardwareMap);
+
     }
 
-    private void init (HardwareMap hwMap) {
-        hardwareMap = hwMap;
-        frontLeftMotor = hardwareMap.get(DcMotor.class, "frontLeftMotor");  // four drivetrain motors
-        frontRightMotor = hardwareMap.get(DcMotor.class, "frontRightMotor");
-        backLeftMotor = hardwareMap.get(DcMotor.class, "backLeftMotor");
-        backRightMotor = hardwareMap.get(DcMotor.class, "backRightMotor");
-        shooterMotor = hardwareMap.get(DcMotor.class, "shooterMotor");  // shooter motor
-        conveyorMotor = hardwareMap.get(DcMotor.class, "conveyorMotor");  // conveyor motor
-        wobbleMotor = hardwareMap.get(DcMotor.class, "wobbleMotor");  // wobble arm motor
+    public void init (HardwareMap ahwMap) {
+        hwMap = ahwMap;
+        frontLeftMotor = hwMap.get(DcMotor.class, "frontLeftMotor");  // four drivetrain motors
+        frontRightMotor = hwMap.get(DcMotor.class, "frontRightMotor");
+        backLeftMotor = hwMap.get(DcMotor.class, "backLeftMotor");
+        backRightMotor = hwMap.get(DcMotor.class, "backRightMotor");
+        shooterMotor = hwMap.get(DcMotor.class, "shooterMotor");  // shooter motor
+        conveyorMotor = hwMap.get(DcMotor.class, "conveyorMotor");  // conveyor motor
+        wobbleMotor = hwMap.get(DcMotor.class, "wobbleMotor");  // wobble arm motor
 
-        magazineServo = hardwareMap.get(Servo.class, "magazineServo");
-        clawServo1 = hardwareMap.get(Servo.class, "wobbleServo1");
-        clawServo2 = hardwareMap.get(Servo.class, "wobbleServo2");
+        magazineServo = hwMap.get(Servo.class, "magazineServo");
+        clawServo1 = hwMap.get(Servo.class, "wobbleServo1");
+        clawServo2 = hwMap.get(Servo.class, "wobbleServo2");
 
 
         // motor direction
