@@ -8,11 +8,17 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class RobotHardware { // the hardware map
 
+    // final values
+    static final double magazineResetPosition = 1.0;
+    static final double claw1InitialPosition = 1.0;
+    static final double claw2InitialPosition = 1.0;
+
     // drivetrain motors
     public DcMotor frontLeftMotor = null;  // four drivetrain motors
     public DcMotor frontRightMotor = null;
     public DcMotor backLeftMotor = null;
     public DcMotor backRightMotor = null;
+
     public DcMotor shooterMotor = null;  // shooter motor
     public DcMotor conveyorMotor = null;  // conveyor motor
     public DcMotor wobbleMotor = null;  // wobble arm motor
@@ -24,66 +30,59 @@ public class RobotHardware { // the hardware map
     public ElapsedTime runtime = new ElapsedTime();
     HardwareMap hwMap = null;
 
-    public RobotHardware () { // constructor
+    public RobotHardware () { // empty constructor
 
     }
 
     public void init (HardwareMap ahwMap) {
         hwMap = ahwMap;
-        frontLeftMotor = hwMap.get(DcMotor.class, "frontLeftMotor");  // four drivetrain motors
+
+        // front left motor
+        frontLeftMotor = hwMap.get(DcMotor.class, "frontLeftMotor");  // initialize the motor
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);  // set as forward
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // do not use encoders for this
+        frontLeftMotor.setPower(0.0);  // initialize to no power
+
+        // front right motor
         frontRightMotor = hwMap.get(DcMotor.class, "frontRightMotor");
-        backLeftMotor = hwMap.get(DcMotor.class, "backLeftMotor");
-        backRightMotor = hwMap.get(DcMotor.class, "backRightMotor");
-        shooterMotor = hwMap.get(DcMotor.class, "shooterMotor");  // shooter motor
-        conveyorMotor = hwMap.get(DcMotor.class, "conveyorMotor");  // conveyor motor
-        wobbleMotor = hwMap.get(DcMotor.class, "wobbleMotor");  // wobble arm motor
-
-        magazineServo = hwMap.get(Servo.class, "magazineServo");
-        clawServo1 = hwMap.get(Servo.class, "wobbleServo1");
-        clawServo2 = hwMap.get(Servo.class, "wobbleServo2");
-
-
-        // motor direction
-        frontLeftMotor.setDirection(DcMotor.Direction.FORWARD);  // four drivetrain motors
-        frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
-        backLeftMotor.setDirection(DcMotor.Direction.FORWARD);
-        backRightMotor.setDirection(DcMotor.Direction.REVERSE);
-        shooterMotor.setDirection(DcMotor.Direction.FORWARD);  // shooter motor
-        conveyorMotor.setDirection(DcMotor.Direction.FORWARD);  // conveyor motor
-        wobbleMotor.setDirection(DcMotor.Direction.FORWARD);  // wobble arm motor
-
-
-        magazineServo.setDirection(Servo.Direction.FORWARD);  // magazine servo
-        clawServo1.setDirection(Servo.Direction.FORWARD);  // two claw servos
-        clawServo2.setDirection(Servo.Direction.FORWARD);
-
-        // zero power behavior
-        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        conveyorMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // motor mode
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // do not use encoders
+        frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightMotor.setPower(0.0);
+
+        // back left motor
+        backLeftMotor = hwMap.get(DcMotor.class, "backLeftMotor");
+        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftMotor.setPower(0.0);
+
+        // back right motor
+        backRightMotor = hwMap.get(DcMotor.class, "backRightMotor");
+        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightMotor.setPower(0.0);
+
+        /*
+        // shooter motor
+        shooterMotor = hwMap.get(DcMotor.class, "shooterMotor");
+        shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         shooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        conveyorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        shooterMotor.setPower(0.0);
 
-        // set power
-        frontLeftMotor.setPower(0);
-        frontRightMotor.setPower(0);
-        backLeftMotor.setPower(0);
-        backRightMotor.setPower(0);
-        shooterMotor.setPower(0);
-        conveyorMotor.setPower(0);
+        // magazine servo
+        magazineServo = hwMap.get(Servo.class, "magazineServo");
+        magazineServo.setDirection(Servo.Direction.FORWARD);  // magazine servo
+        magazineServo.setPosition(magazineResetPosition);
 
-        magazineServo.setPosition (1.0); // initial servo position
-        clawServo1.setPosition(1.0);
-        clawServo2.setPosition(1.0);
+        // magazine servo left
+        clawServo1 = hwMap.get(Servo.class, "wobbleServo1");
+        clawServo1.setDirection(Servo.Direction.FORWARD);
+        clawServo1.setPosition(claw1InitialPosition);
+
+        // claw servo right
+        clawServo2 = hwMap.get(Servo.class, "wobbleServo2");
+        clawServo2.setDirection(Servo.Direction.FORWARD);
+        clawServo2.setPosition(claw2InitialPosition);
+         */
     }
 
 }
