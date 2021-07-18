@@ -28,6 +28,12 @@ public class MecanumTeleOp extends LinearOpMode {
     static final double ringPushingPosition = 1.0;
     static final double ringResetPosition = 0.0;
 
+    // toggle buttons
+    static final double[] toggleSpeeds = {1.0, 0.15};
+    static int speedPointer = 0;
+    static final double[] toggleDirection = {1.0, -1.0};
+    static int directionPointer = 0;
+
     // other values
     static final int delay = 50;  // milliseconds
 
@@ -42,10 +48,20 @@ public class MecanumTeleOp extends LinearOpMode {
             double vertical = gamepad1.left_stick_y;
             double turn = gamepad1.right_stick_x;
 
-            robot.backLeftMotor.setPower(vertical + turn - horizontal);  // arcade drive algorithm for mecanum wheels
-            robot.frontLeftMotor.setPower(vertical + turn + horizontal);
-            robot.backRightMotor.setPower(vertical - turn + horizontal);
-            robot.frontRightMotor.setPower(vertical - turn - horizontal);
+            robot.backLeftMotor.setPower(toggleDirection[directionPointer] * toggleSpeeds[speedPointer] * (vertical + turn - horizontal));  // arcade drive algorithm for mecanum wheels
+            robot.frontLeftMotor.setPower(toggleDirection[directionPointer] * toggleSpeeds[speedPointer] * (vertical + turn + horizontal));
+            robot.backRightMotor.setPower(toggleDirection[directionPointer] * toggleSpeeds[speedPointer] * (vertical - turn + horizontal));
+            robot.frontRightMotor.setPower(toggleDirection[directionPointer] * toggleSpeeds[speedPointer] * (vertical - turn - horizontal));
+
+            // toggle ninja mode
+            if (gamepad1.x) {
+                speedPointer = (speedPointer + 1) % 2;  // this way, we just toggle between indexes 0 and 1 in the speed array
+            }
+
+            // toggle reversal
+            if (gamepad1.b) {
+                directionPointer = (directionPointer + 1) % 2;  // toggle the pointer between 0 and 1
+            }
 
             /*
             // shooter
@@ -106,6 +122,7 @@ public class MecanumTeleOp extends LinearOpMode {
                 robot.clawServo1.setPosition(closeClawPositionLeft);
                 robot.clawServo2.setPosition(closeClawPositionRight);
             }
+
             sleep(delay);
              */
         }

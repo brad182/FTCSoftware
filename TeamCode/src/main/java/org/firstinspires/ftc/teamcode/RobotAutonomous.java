@@ -18,11 +18,22 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 // test 
 @Autonomous (name = "Autonomous", group = "Autonomous")
 public class RobotAutonomous extends LinearOpMode {
     static RobotHardware robot = new RobotHardware();
+
+    // camera
+    public TFObjectDetector tfod;
+    private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
+    public VuforiaLocalizer vuforia;
+    private static final String LABEL_FIRST_ELEMENT = "4";
+    private static final String LABEL_SECOND_ELEMENT = "1";
+    public final String vuforiaKey = "no key yet";
+
     // driving values
     public final int distanceDriveToShootingPosition = 20;
 
@@ -33,7 +44,7 @@ public class RobotAutonomous extends LinearOpMode {
 
     // motor values
     public final double ticksPerRevolution = 537.6;  // the ticks per revolution for our motors, the REV HEX Planetary 20:1
-    public final int wheelDiameter = 3;
+    public final double wheelDiameter = 4;
     public final double wobbleRotations = 0.5;
     public final double power = 1.0;
     public final double shooterPower = 1.0;
@@ -198,6 +209,50 @@ public class RobotAutonomous extends LinearOpMode {
         robot.backRightMotor.setPower(0);
     }
 
+    private void initializeVuforia() {
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = vuforiaKey;
+        parameters.cameraDirection = CameraDirection.BACK;
+
+        //  Instantiate the Vuforia engine
+        vuforia = ClassFactory.getInstance().createVuforia(parameters);
+    }
+
+    private void initTfod() {
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minResultConfidence = 0.8f;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    }
+
+    public String getStackSize(){
+        String stackSize = "0";
+        if (tfod != null) {
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+
+            if (updatedRecognitions != null) {
+                //telemetry.addData("# Object Detected", updatedRecognitions.size());
+                // step through the list of recognitions and display boundary info.
+                int i = 0;
+                for (Recognition recognition : updatedRecognitions) {
+                    /*
+                    telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                    telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f", recognition.getLeft(), recognition.getTop());
+                    telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f", recognition.getRight(), recognition.getBottom());
+                    */
+
+                    stackSize = recognition.getLabel();
+                    telemetry.update();
+                    return stackSize; //change back to stackval
+                }
+            }
+
+        }
+        return stackSize; //change back to stackval
+    }
+
     public void shootThreeRings () throws InterruptedException {  // shoots the three rings in the magazine
         robot.shooterMotor.setPower(shooterPower);
 
@@ -280,26 +335,40 @@ public class RobotAutonomous extends LinearOpMode {
     }
 
     public void runOpMode() throws InterruptedException {
+        /*
         boolean zeroRings = false;  // ring detection, use boolean values as placeholders for now
         boolean oneRing = false;
         boolean fourRings = true;
+         */
 
+        robot.init(hardwareMap);
         initialize();
 
+        /*
+        initializeVuforia();
+        initTfod();
+        tfod.activate();
+        tfod.setZoom(2, 2);
+        String stackSize = getStackSize();
+         */
+
         waitForStart();
+        driveForward(5.0);
 
-        driveForward(distanceDriveToShootingPosition);  // drive forward to get to the shooting location
-        shootThreeRings();  // shoot three rings, same for all three autons
+        //driveForward(distanceDriveToShootingPosition);  // drive forward to get to the shooting location
+        //shootThreeRings();  // shoot three rings, same for all three autons
 
-        if (zeroRings) {  // zero rings
+        /*
+        if (stackSize.equals("0")) {  // zero rings
             autonomousZeroRings();
         }
-        else if (oneRing) {  // one ring
+        else if (stackSize.equals("1")) {  // one ring
             autonomousOneRing();
         }
-        else if (fourRings){  // four rings
+        else if (stackSize.equals("4")){  // four rings
             autonomousFourRings();
         }
+        */
     }
 
 

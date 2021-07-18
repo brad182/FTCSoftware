@@ -1,3 +1,8 @@
+/*
+FTC Dashboard: http://192.168.43.1:8080/dash
+Onbot Java: 192.168.43.1:8080
+ */
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
