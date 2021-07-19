@@ -66,13 +66,14 @@ public class RobotHardware { // the hardware map
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setPower(0.0);
 
-        /*
+
         // shooter motor
         shooterMotor = hwMap.get(DcMotor.class, "shooterMotor");
-        shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         shooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooterMotor.setPower(0.0);
 
+        /*
         // magazine servo
         magazineServo = hwMap.get(Servo.class, "magazineServo");
         magazineServo.setDirection(Servo.Direction.FORWARD);  // magazine servo

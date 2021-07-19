@@ -29,9 +29,9 @@ public class MecanumTeleOp extends LinearOpMode {
     static final double ringResetPosition = 0.0;
 
     // toggle buttons
-    static final double[] toggleSpeeds = {1.0, 0.15};
+    static final double[] toggleSpeeds = {1.0, 0.15};  // full speed and 15 percent speed
     static int speedPointer = 0;
-    static final double[] toggleDirection = {1.0, -1.0};
+    static final double[] toggleDirection = {1.0, -1.0};  // default directions and reversed directions
     static int directionPointer = 0;
 
     // other values
@@ -63,15 +63,19 @@ public class MecanumTeleOp extends LinearOpMode {
                 directionPointer = (directionPointer + 1) % 2;  // toggle the pointer between 0 and 1
             }
 
-            /*
+
             // shooter
-            if (gamepad2.right_trigger > 0) {
+
+            if (gamepad1.right_trigger > 0) {
                 robot.shooterMotor.setPower(shooterPower);
             }
             else {
                 robot.shooterMotor.setPower(0);
             }
 
+
+
+            /*
             // ring pusher
             if (gamepad2.right_bumper) {
                 robot.magazineServo.setPosition(ringPushingPosition);  // push the ring into the shooter

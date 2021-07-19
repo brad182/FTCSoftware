@@ -44,7 +44,7 @@ public class RobotAutonomous extends LinearOpMode {
 
     // motor values
     public final double ticksPerRevolution = 537.6;  // the ticks per revolution for our motors, the REV HEX Planetary 20:1
-    public final double wheelDiameter = 4;
+    public final double wheelDiameter = 3.937;  // mecanum wheels are 100 millimeters in diameter
     public final double wobbleRotations = 0.5;
     public final double power = 1.0;
     public final double shooterPower = 1.0;

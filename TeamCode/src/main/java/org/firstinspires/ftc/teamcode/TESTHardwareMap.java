@@ -9,10 +9,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class TESTHardwareMap {
+    /*
     public DcMotor frontLeftMotor = null;  // four drivetrain motors
     public DcMotor frontRightMotor = null;
     public DcMotor backLeftMotor = null;
     public DcMotor backRightMotor = null;
+     */
+
+    public DcMotor shooterMotor = null;
 
     public ElapsedTime runtime = new ElapsedTime();
     HardwareMap hwMap = null;
@@ -23,6 +27,7 @@ public class TESTHardwareMap {
 
     public void init (HardwareMap ahwMap) {
         hwMap = ahwMap;
+        /*
         frontLeftMotor = hwMap.get(DcMotor.class, "frontLeftMotor");
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);  // set as forward
         frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // do not use encoders for this
@@ -42,7 +47,12 @@ public class TESTHardwareMap {
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setPower(0.0);
+         */
 
+        shooterMotor = hwMap.get(DcMotor.class, "frontLeftMotor");
+        shooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);  // set as forward
+        shooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // do not use encoders for this
+        shooterMotor.setPower(0.0);
     }
 
 

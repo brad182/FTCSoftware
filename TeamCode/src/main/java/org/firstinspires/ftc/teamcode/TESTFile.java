@@ -17,6 +17,7 @@ public class TESTFile extends LinearOpMode {
         testRobot.init(hardwareMap);
         waitForStart(); // wait for the start button
         while (opModeIsActive()) {  // keep going until the stop button is pressed
+            /*
             double horizontal = -gamepad1.left_stick_x;
             double vertical = gamepad1.left_stick_y;
             double turn = gamepad1.right_stick_x;
@@ -25,6 +26,8 @@ public class TESTFile extends LinearOpMode {
             testRobot.frontLeftMotor.setPower(vertical + turn + horizontal);
             testRobot.backRightMotor.setPower(vertical - turn + horizontal);
             testRobot.frontRightMotor.setPower(vertical - turn - horizontal);
+             */
+
         }
     }
 }
