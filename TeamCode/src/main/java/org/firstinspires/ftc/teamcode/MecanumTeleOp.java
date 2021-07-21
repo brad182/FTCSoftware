@@ -25,8 +25,8 @@ public class MecanumTeleOp extends LinearOpMode {
     static final double closeClawPositionLeft = 0.0;
     static final double closeClawPositionRight = 0.0;
 
-    static final double ringPushingPosition = 1.0;
-    static final double ringResetPosition = 0.0;
+    static final double pusherResetPosition = 1.0;
+    static final double pusherPushPosition = 0.0;
 
     // toggle buttons
     static final double[] toggleSpeeds = {1.0, 0.15};  // full speed and 15 percent speed
@@ -38,6 +38,7 @@ public class MecanumTeleOp extends LinearOpMode {
     static final int delay = 50;  // milliseconds
 
     @Override
+
     public void runOpMode() {
         robot.init(hardwareMap);  // initialize before the start button
 
@@ -73,9 +74,30 @@ public class MecanumTeleOp extends LinearOpMode {
                 robot.shooterMotor.setPower(0);
             }
 
-
-
             /*
+            // automatic shoot three rings
+            if (gamepad2.dpad_up) {
+                robot.magazineServo.setPosition(pusherResetPosition);  // make sure it is reset
+                robot.shooterMotor.setPower(shooterPower);  // start spinning up the shooter
+
+                sleep(1000);  // wait 1 second to speed up
+
+                robot.magazineServo.setPosition(pusherPushPosition);  // first ring
+                sleep(10);
+                robot.magazineServo.setPosition(pusherResetPosition);
+                sleep(200);
+
+                robot.magazineServo.setPosition(pusherPushPosition);  // second ring
+                sleep(10);
+                robot.magazineServo.setPosition(pusherResetPosition);
+                sleep(200);
+
+                robot.magazineServo.setPosition(pusherPushPosition);  // third ring
+                sleep(10);
+                robot.magazineServo.setPosition(pusherResetPosition);
+                sleep(50);
+            }
+
             // ring pusher
             if (gamepad2.right_bumper) {
                 robot.magazineServo.setPosition(ringPushingPosition);  // push the ring into the shooter
