@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled; //
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode; //
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp; //
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Hardware;
 import com.qualcomm.robotcore.util.Range;
 
@@ -19,14 +20,18 @@ public class MecanumTeleOp extends LinearOpMode {
     static final double intakePower = 1.0;
     static final double wobbleArmPower = 1.0;
 
-    // servo values
+    // claw values
     static final double openClawPositionLeft = 1.0;
     static final double openClawPositionRight = 1.0;
     static final double closeClawPositionLeft = 0.0;
     static final double closeClawPositionRight = 0.0;
 
+    // shooter values
     static final double pusherResetPosition = 1.0;
     static final double pusherPushPosition = 0.0;
+    static final int shooterSpeedUpTime = 2000;
+    static final int delayBetweenRings = 1000;
+    static final int delayBetweenReversing = 10;
 
     // toggle buttons
     static final double[] toggleSpeeds = {1.0, 0.15};  // full speed and 15 percent speed
@@ -35,7 +40,7 @@ public class MecanumTeleOp extends LinearOpMode {
     static int directionPointer = 0;
 
     // other values
-    static final int delay = 50;  // milliseconds
+    static final int delay = 20;  // milliseconds
 
     @Override
 
@@ -74,39 +79,50 @@ public class MecanumTeleOp extends LinearOpMode {
                 robot.shooterMotor.setPower(0);
             }
 
-            /*
             // automatic shoot three rings
             if (gamepad2.dpad_up) {
                 robot.magazineServo.setPosition(pusherResetPosition);  // make sure it is reset
                 robot.shooterMotor.setPower(shooterPower);  // start spinning up the shooter
 
-                sleep(1000);  // wait 1 second to speed up
+                sleep(shooterSpeedUpTime);  // wait 2 seconds to speed up
 
+                // POSSIBLY NEED TO ADD REVERSE DIRECTIONS
                 robot.magazineServo.setPosition(pusherPushPosition);  // first ring
-                sleep(10);
-                robot.magazineServo.setPosition(pusherResetPosition);
-                sleep(200);
+                sleep(delayBetweenReversing);
+                robot.magazineServo.setDirection(Servo.Direction.REVERSE);  // reverse to go the other way
+                robot.magazineServo.setPosition(pusherResetPosition);  // reset the servo
+                robot.magazineServo.setDirection(Servo.Direction.FORWARD);  // reset to the direction that you want it to pushed in for the next ring
+                sleep(delayBetweenRings); // delay between rings
 
                 robot.magazineServo.setPosition(pusherPushPosition);  // second ring
-                sleep(10);
+                sleep(delayBetweenReversing);
+                robot.magazineServo.setDirection(Servo.Direction.REVERSE);
                 robot.magazineServo.setPosition(pusherResetPosition);
-                sleep(200);
+                robot.magazineServo.setDirection(Servo.Direction.FORWARD);
+                sleep(delayBetweenRings);
 
                 robot.magazineServo.setPosition(pusherPushPosition);  // third ring
-                sleep(10);
+                sleep(delayBetweenReversing);
+                robot.magazineServo.setDirection(Servo.Direction.REVERSE);
                 robot.magazineServo.setPosition(pusherResetPosition);
-                sleep(50);
+                robot.magazineServo.setDirection(Servo.Direction.FORWARD);
             }
+
 
             // ring pusher
             if (gamepad2.right_bumper) {
-                robot.magazineServo.setPosition(ringPushingPosition);  // push the ring into the shooter
-                sleep(delay);
-                robot.magazineServo.setPosition(ringResetPosition);  // reset the servo to the normal position
+                robot.magazineServo.setPosition(pusherResetPosition);  // ensure that the servo is in the rest position
+
+                robot.magazineServo.setPosition(pusherPushPosition);  // push the ring into the shooter
+                sleep(10);
+                robot.magazineServo.setDirection(Servo.Direction.REVERSE);
+                robot.magazineServo.setPosition(pusherResetPosition);  // reset the servo to the normal position
+                robot.magazineServo.setDirection(Servo.Direction.FORWARD);
             }
 
+            /*
             // intake
-            if (gamepad2.left_bumper) {
+            if (gamepad1.right_bumper) {
                 robot.conveyorMotor.setPower(intakePower);
             }
             else {
@@ -114,7 +130,7 @@ public class MecanumTeleOp extends LinearOpMode {
             }
 
             // extake
-            if (gamepad2.left_trigger > 0) {
+            if (gamepad1.left_bumper) {
                 robot.conveyorMotor.setPower(-intakePower);
             }
             else {
