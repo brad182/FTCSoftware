@@ -54,6 +54,11 @@ public class MecanumTeleOp extends LinearOpMode {
             double vertical = gamepad1.left_stick_y;
             double turn = gamepad1.right_stick_x;
 
+            telemetry.addData("horizontal", horizontal);  // print values
+            telemetry.addData("vertical", vertical);
+            telemetry.addData("turn", turn);
+            telemetry.update();
+
             robot.backLeftMotor.setPower(toggleDirection[directionPointer] * toggleSpeeds[speedPointer] * (vertical + turn - horizontal));  // arcade drive algorithm for mecanum wheels
             robot.frontLeftMotor.setPower(toggleDirection[directionPointer] * toggleSpeeds[speedPointer] * (vertical + turn + horizontal));
             robot.backRightMotor.setPower(toggleDirection[directionPointer] * toggleSpeeds[speedPointer] * (vertical - turn + horizontal));
@@ -79,7 +84,9 @@ public class MecanumTeleOp extends LinearOpMode {
                 robot.shooterMotor.setPower(0);
             }
 
+            /*
             // automatic shoot three rings
+
             if (gamepad2.dpad_up) {
                 robot.magazineServo.setPosition(pusherResetPosition);  // make sure it is reset
                 robot.shooterMotor.setPower(shooterPower);  // start spinning up the shooter
@@ -120,7 +127,7 @@ public class MecanumTeleOp extends LinearOpMode {
                 robot.magazineServo.setDirection(Servo.Direction.FORWARD);
             }
 
-            /*
+
             // intake
             if (gamepad1.right_bumper) {
                 robot.conveyorMotor.setPower(intakePower);

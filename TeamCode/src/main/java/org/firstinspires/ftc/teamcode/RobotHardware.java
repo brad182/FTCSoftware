@@ -29,8 +29,8 @@ public class RobotHardware { // the hardware map
     public DcMotor wobbleMotor = null;  // wobble arm motor
 
     public Servo magazineServo = null;
-    public Servo clawServo1 = null;
-    public Servo clawServo2 = null;
+    //public Servo clawServo1 = null;
+    //public Servo clawServo2 = null;
 
     public ElapsedTime runtime = new ElapsedTime();
     HardwareMap hwMap = null;
@@ -73,13 +73,13 @@ public class RobotHardware { // the hardware map
         shooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooterMotor.setPower(0.0);
 
-
+        /*
         // magazine servo
         magazineServo = hwMap.get(Servo.class, "magazineServo");
         magazineServo.setDirection(Servo.Direction.FORWARD);  // magazine servo
         magazineServo.setPosition(magazineResetPosition);
 
-        /*
+
         // magazine servo left
         clawServo1 = hwMap.get(Servo.class, "wobbleServo1");
         clawServo1.setDirection(Servo.Direction.FORWARD);
