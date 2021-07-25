@@ -14,7 +14,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class RobotHardware { // the hardware map
 
     // final values
-    static final double magazineResetPosition = 1.0;
+    static final double pusherResetPosition = 1.0;
+    static final double pusherPushPosition = 0.0;
+
     static final double claw1InitialPosition = 1.0;
     static final double claw2InitialPosition = 1.0;
 
@@ -66,21 +68,25 @@ public class RobotHardware { // the hardware map
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setPower(0.0);
 
-
         // shooter motor
         shooterMotor = hwMap.get(DcMotor.class, "shooterMotor");
-        shooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         shooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooterMotor.setPower(0.0);
 
-        /*
         // magazine servo
         magazineServo = hwMap.get(Servo.class, "magazineServo");
         magazineServo.setDirection(Servo.Direction.FORWARD);  // magazine servo
-        magazineServo.setPosition(magazineResetPosition);
+        magazineServo.setPosition(pusherResetPosition);
 
+        // intake motor
+        conveyorMotor = hwMap.get(DcMotor.class, "conveyorMotor");
+        conveyorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        conveyorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        conveyorMotor.setPower(0.0);
 
-        // magazine servo left
+        /*
+        // claw servo left
         clawServo1 = hwMap.get(Servo.class, "wobbleServo1");
         clawServo1.setDirection(Servo.Direction.FORWARD);
         clawServo1.setPosition(claw1InitialPosition);

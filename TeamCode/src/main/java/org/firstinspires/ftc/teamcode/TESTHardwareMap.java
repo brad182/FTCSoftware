@@ -6,6 +6,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class TESTHardwareMap {
@@ -16,7 +17,12 @@ public class TESTHardwareMap {
     public DcMotor backRightMotor = null;
      */
 
+    static final double pusherResetPosition = 1.0;
+    static final double pusherPushPosition = 0.0;
+
     public DcMotor shooterMotor = null;
+
+    public Servo magazineServo = null;
 
     public ElapsedTime runtime = new ElapsedTime();
     HardwareMap hwMap = null;
@@ -48,6 +54,10 @@ public class TESTHardwareMap {
         backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRightMotor.setPower(0.0);
          */
+
+        magazineServo = hwMap.get(Servo.class, "magazineServo");
+        magazineServo.setDirection(Servo.Direction.FORWARD);  // magazine servo
+        magazineServo.setPosition(pusherResetPosition);
 
         shooterMotor = hwMap.get(DcMotor.class, "frontLeftMotor");
         shooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);  // set as forward

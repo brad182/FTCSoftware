@@ -27,8 +27,6 @@ public class MecanumTeleOp extends LinearOpMode {
     static final double closeClawPositionRight = 0.0;
 
     // shooter values
-    static final double pusherResetPosition = 1.0;
-    static final double pusherPushPosition = 0.0;
     static final int shooterSpeedUpTime = 2000;
     static final int delayBetweenRings = 1000;
     static final int delayBetweenReversing = 10;
@@ -42,6 +40,9 @@ public class MecanumTeleOp extends LinearOpMode {
     // other values
     static final int delay = 20;  // milliseconds
 
+    static final double pusherPushPosition = 0.0;
+    static final double pusherResetPosition = 1.0;
+
     @Override
 
     public void runOpMode() {
@@ -50,14 +51,15 @@ public class MecanumTeleOp extends LinearOpMode {
         waitForStart(); // wait for the start button
 
         while (opModeIsActive()) {  // keep going until the stop button is pressed
-            double horizontal = -gamepad1.left_stick_x;
-            double vertical = gamepad1.left_stick_y;
+            double horizontal = gamepad1.left_stick_x;
+            double vertical = -gamepad1.left_stick_y;
             double turn = gamepad1.right_stick_x;
 
+            /*
             telemetry.addData("horizontal", horizontal);  // print values
             telemetry.addData("vertical", vertical);
             telemetry.addData("turn", turn);
-            telemetry.update();
+             */
 
             robot.backLeftMotor.setPower(toggleDirection[directionPointer] * toggleSpeeds[speedPointer] * (vertical + turn - horizontal));  // arcade drive algorithm for mecanum wheels
             robot.frontLeftMotor.setPower(toggleDirection[directionPointer] * toggleSpeeds[speedPointer] * (vertical + turn + horizontal));
@@ -66,70 +68,41 @@ public class MecanumTeleOp extends LinearOpMode {
 
             // toggle ninja mode
             if (gamepad1.x) {
+                telemetry.addData("speedPointer", speedPointer);
                 speedPointer = (speedPointer + 1) % 2;  // this way, we just toggle between indexes 0 and 1 in the speed array
             }
 
             // toggle reversal
             if (gamepad1.b) {
+                telemetry.addData("directionPointer", directionPointer);
                 directionPointer = (directionPointer + 1) % 2;  // toggle the pointer between 0 and 1
             }
-
 
             // shooter
 
             if (gamepad1.right_trigger > 0) {
+                telemetry.addData("shooter button pressed", gamepad1.right_trigger);
                 robot.shooterMotor.setPower(shooterPower);
             }
             else {
                 robot.shooterMotor.setPower(0);
             }
 
-            /*
-            // automatic shoot three rings
-
-            if (gamepad2.dpad_up) {
-                robot.magazineServo.setPosition(pusherResetPosition);  // make sure it is reset
-                robot.shooterMotor.setPower(shooterPower);  // start spinning up the shooter
-
-                sleep(shooterSpeedUpTime);  // wait 2 seconds to speed up
-
-                // POSSIBLY NEED TO ADD REVERSE DIRECTIONS
-                robot.magazineServo.setPosition(pusherPushPosition);  // first ring
-                sleep(delayBetweenReversing);
-                robot.magazineServo.setDirection(Servo.Direction.REVERSE);  // reverse to go the other way
-                robot.magazineServo.setPosition(pusherResetPosition);  // reset the servo
-                robot.magazineServo.setDirection(Servo.Direction.FORWARD);  // reset to the direction that you want it to pushed in for the next ring
-                sleep(delayBetweenRings); // delay between rings
-
-                robot.magazineServo.setPosition(pusherPushPosition);  // second ring
-                sleep(delayBetweenReversing);
-                robot.magazineServo.setDirection(Servo.Direction.REVERSE);
-                robot.magazineServo.setPosition(pusherResetPosition);
-                robot.magazineServo.setDirection(Servo.Direction.FORWARD);
-                sleep(delayBetweenRings);
-
-                robot.magazineServo.setPosition(pusherPushPosition);  // third ring
-                sleep(delayBetweenReversing);
-                robot.magazineServo.setDirection(Servo.Direction.REVERSE);
-                robot.magazineServo.setPosition(pusherResetPosition);
-                robot.magazineServo.setDirection(Servo.Direction.FORWARD);
-            }
-
-
             // ring pusher
-            if (gamepad2.right_bumper) {
-                robot.magazineServo.setPosition(pusherResetPosition);  // ensure that the servo is in the rest position
+            if (gamepad1.right_bumper) {
+                robot.magazineServo.setPosition(RobotHardware.pusherResetPosition);  // ensure that the servo is in the reset position
 
-                robot.magazineServo.setPosition(pusherPushPosition);  // push the ring into the shooter
-                sleep(10);
-                robot.magazineServo.setDirection(Servo.Direction.REVERSE);
-                robot.magazineServo.setPosition(pusherResetPosition);  // reset the servo to the normal position
-                robot.magazineServo.setDirection(Servo.Direction.FORWARD);
+                robot.magazineServo.setPosition(RobotHardware.pusherPushPosition);  // push the ring into the shooter
+                sleep(500);
+                //robot.magazineServo.setDirection(Servo.Direction.REVERSE);
+                robot.magazineServo.setPosition(RobotHardware.pusherResetPosition);  // reset the servo to the normal position
+                sleep(500);
+                //robot.magazineServo.setDirection(Servo.Direction.FORWARD);
             }
-
 
             // intake
-            if (gamepad1.right_bumper) {
+            /*
+            if (gamepad1.left_bumper) {
                 robot.conveyorMotor.setPower(intakePower);
             }
             else {
@@ -137,11 +110,43 @@ public class MecanumTeleOp extends LinearOpMode {
             }
 
             // extake
-            if (gamepad1.left_bumper) {
+            if (gamepad1.left_trigger > 0) {
                 robot.conveyorMotor.setPower(-intakePower);
             }
             else {
                 robot.conveyorMotor.setPower(0);
+            }
+
+
+
+            // automatic shoot three rings
+
+            if (gamepad2.dpad_up) {
+                robot.magazineServo.setPosition(RobotHardware.pusherResetPosition);  // make sure it is reset
+                robot.shooterMotor.setPower(shooterPower);  // start spinning up the shooter
+
+                sleep(shooterSpeedUpTime);  // wait 2 seconds to speed up
+
+                // POSSIBLY NEED TO ADD REVERSE DIRECTIONS
+                robot.magazineServo.setPosition(RobotHardware.pusherPushPosition);  // first ring
+                sleep(delayBetweenReversing);
+                robot.magazineServo.setDirection(Servo.Direction.REVERSE);  // reverse to go the other way
+                robot.magazineServo.setPosition(RobotHardware.pusherResetPosition);  // reset the servo
+                robot.magazineServo.setDirection(Servo.Direction.FORWARD);  // reset to the direction that you want it to pushed in for the next ring
+                sleep(delayBetweenRings); // delay between rings
+
+                robot.magazineServo.setPosition(RobotHardware.pusherPushPosition);  // second ring
+                sleep(delayBetweenReversing);
+                robot.magazineServo.setDirection(Servo.Direction.REVERSE);
+                robot.magazineServo.setPosition(RobotHardware.pusherResetPosition);
+                robot.magazineServo.setDirection(Servo.Direction.FORWARD);
+                sleep(delayBetweenRings);
+
+                robot.magazineServo.setPosition(RobotHardware.pusherPushPosition);  // third ring
+                sleep(delayBetweenReversing);
+                robot.magazineServo.setDirection(Servo.Direction.REVERSE);
+                robot.magazineServo.setPosition(RobotHardware.pusherResetPosition);
+                robot.magazineServo.setDirection(Servo.Direction.FORWARD);
             }
 
             // wobble arm up
@@ -174,6 +179,8 @@ public class MecanumTeleOp extends LinearOpMode {
 
             sleep(delay);
              */
+
+            telemetry.update();  // update the prints at the end of each cycle
         }
     }
 }
