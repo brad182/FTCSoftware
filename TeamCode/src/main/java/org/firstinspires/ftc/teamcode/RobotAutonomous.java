@@ -22,7 +22,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 // test 
-@Autonomous (name = "Autonomous", group = "Autonomous")
+@Autonomous (name = "Robot Autonomous", group = "Autonomous")
 public class RobotAutonomous extends LinearOpMode {
     static RobotHardware robot = new RobotHardware();
 
@@ -32,7 +32,9 @@ public class RobotAutonomous extends LinearOpMode {
     public VuforiaLocalizer vuforia;
     private static final String LABEL_FIRST_ELEMENT = "4";
     private static final String LABEL_SECOND_ELEMENT = "1";
-    public final String vuforiaKey = "no key yet";
+    public final String vuforiaKey = "AQQmsVn/////AAABmQjk2+3dZE+Tk5oj3L8j0DJvG4NWcCztbIl7BYnLuRUbBBF7ocAhc5kq25SO33annXS4Vn8kAruErc1ETaO+pralkAh4QcvBa9mL4/g+e01KmfAIBGHsJzRIHoravhIvOhdHODQzQu77u3h/hYmD9MSFE+e5d+yQOmWTl5dKZWUwLMiYY4KEXtOMTkP99vK3Jk8lINPpyDyFp6cDrxSpwz7rs9A8HCD8aXiuK8RDRyc3bTEe7aphVTrEzWADQHMwozaegUBlgtnAtlMHa4Ea8Hl21jWRu00haLb9lVNTsIyak5h8ZeJFcGj17AxYQ+iYt6YihHPw2MOrQzFhSKL+NwjWlDYHjlcehVjQ9Xq2d4xo";
+
+
 
     // driving values
     public final int distanceDriveToShootingPosition = 20;
@@ -59,10 +61,14 @@ public class RobotAutonomous extends LinearOpMode {
     public final double oneForward = 60.0;
     public final double fourForward = 60.0;
 
+    // shooter values
+    public final int shooterSpeedUpTime = 2000;
+    public final int servoDelay = 500;
+
     public void driveForward (double inches) {  // drives the robot forward given a distance
         robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  // reset encoders to zero
         robot.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  // TRY NEW ENCODER CABLE
         robot.backRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         double circumference = Math.PI * wheelDiameter;
@@ -84,8 +90,15 @@ public class RobotAutonomous extends LinearOpMode {
         robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.backRightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+
         while (robot.frontLeftMotor.isBusy() || robot.backLeftMotor.isBusy() || robot.frontRightMotor.isBusy() || robot.backRightMotor.isBusy()) {  // wait
             // pause in a while loop while the motors are still running
+            telemetry.addData("frontLeftMotor", robot.frontLeftMotor.getCurrentPosition());
+            telemetry.addData("frontRightMotor", robot.frontRightMotor.getCurrentPosition());
+            telemetry.addData("backLeftMotor", robot.backLeftMotor.getCurrentPosition());
+            telemetry.addData("backRightMotor", robot.backRightMotor.getCurrentPosition());
+
+            telemetry.update();
         }
 
         robot.frontLeftMotor.setPower(0);  // reset power to 0
@@ -209,6 +222,7 @@ public class RobotAutonomous extends LinearOpMode {
         robot.backRightMotor.setPower(0);
     }
 
+
     private void initializeVuforia() {
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
@@ -218,6 +232,8 @@ public class RobotAutonomous extends LinearOpMode {
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
     }
+
+
 
     private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -237,11 +253,11 @@ public class RobotAutonomous extends LinearOpMode {
                 // step through the list of recognitions and display boundary info.
                 int i = 0;
                 for (Recognition recognition : updatedRecognitions) {
-                    /*
+
                     telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                     telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f", recognition.getLeft(), recognition.getTop());
                     telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f", recognition.getRight(), recognition.getBottom());
-                    */
+
 
                     stackSize = recognition.getLabel();
                     telemetry.update();
@@ -254,19 +270,31 @@ public class RobotAutonomous extends LinearOpMode {
     }
 
     public void shootThreeRings () throws InterruptedException {  // shoots the three rings in the magazine
-        robot.shooterMotor.setPower(shooterPower);
+        boolean go = true;  // use booleans
 
-        robot.magazineServo.setPosition(shooterServoPosition);  // first ring
-        wait(pause);
-        robot.magazineServo.setPosition(resetShooterServoPosition);
+        while (go) {
+            robot.magazineServo.setPosition(RobotHardware.pusherResetPosition);  // make sure it is reset
+            robot.shooterMotor.setPower(shooterPower);  // start spinning up the shooter
 
-        robot.magazineServo.setPosition(shooterServoPosition);  // second ring
-        wait(pause);
-        robot.magazineServo.setPosition(resetShooterServoPosition);
+            sleep(shooterSpeedUpTime);  // wait 2 seconds to speed up
 
-        robot.magazineServo.setPosition(shooterServoPosition);  // third ring
-        wait(pause);
-        robot.magazineServo.setPosition(resetShooterServoPosition);
+            robot.magazineServo.setPosition(RobotHardware.pusherPushPosition);  // first ring
+            sleep(servoDelay);
+            robot.magazineServo.setPosition(RobotHardware.pusherResetPosition);  // reset the servo
+            sleep(servoDelay); // delay between rings
+
+            robot.magazineServo.setPosition(RobotHardware.pusherPushPosition);  // first ring
+            sleep(servoDelay);
+            robot.magazineServo.setPosition(RobotHardware.pusherResetPosition);  // reset the servo
+            sleep(servoDelay); // delay between rings
+
+            robot.magazineServo.setPosition(RobotHardware.pusherPushPosition);  // first ring
+            sleep(servoDelay);
+            robot.magazineServo.setPosition(RobotHardware.pusherResetPosition);  // reset the servo
+
+            robot.shooterMotor.setPower(0);  // stop the shooter
+            go = false;
+        }
     }
 
     public void releaseWobble () {
@@ -324,6 +352,7 @@ public class RobotAutonomous extends LinearOpMode {
         dropWobble();  // drop the wobble
     }
 
+    /*
     static void initialize () {
         robot.frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);  // turn on encoder mode
         robot.frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -333,6 +362,7 @@ public class RobotAutonomous extends LinearOpMode {
 
         robot.shooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // does not use encoders
     }
+     */
 
     public void runOpMode() throws InterruptedException {
         /*
@@ -342,7 +372,7 @@ public class RobotAutonomous extends LinearOpMode {
          */
 
         robot.init(hardwareMap);
-        initialize();
+        //initialize();
 
         /*
         initializeVuforia();

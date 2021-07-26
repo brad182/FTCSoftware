@@ -47,25 +47,25 @@ public class RobotHardware { // the hardware map
         // front left motor
         frontLeftMotor = hwMap.get(DcMotor.class, "frontLeftMotor");  // initialize the motor
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);  // set as forward
-        frontLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // do not use encoders for this
+        frontLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);  // do not use encoders for this
         frontLeftMotor.setPower(0.0);  // initialize to no power
 
         // front right motor
         frontRightMotor = hwMap.get(DcMotor.class, "frontRightMotor");
         frontRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontRightMotor.setPower(0.0);
 
         // back left motor
         backLeftMotor = hwMap.get(DcMotor.class, "backLeftMotor");
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backLeftMotor.setPower(0.0);
 
         // back right motor
         backRightMotor = hwMap.get(DcMotor.class, "backRightMotor");
         backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightMotor.setPower(0.0);
 
         // shooter motor
@@ -79,11 +79,13 @@ public class RobotHardware { // the hardware map
         magazineServo.setDirection(Servo.Direction.FORWARD);  // magazine servo
         magazineServo.setPosition(pusherResetPosition);
 
+        /*
         // intake motor
         conveyorMotor = hwMap.get(DcMotor.class, "conveyorMotor");
         conveyorMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         conveyorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         conveyorMotor.setPower(0.0);
+         */
 
         /*
         // claw servo left
