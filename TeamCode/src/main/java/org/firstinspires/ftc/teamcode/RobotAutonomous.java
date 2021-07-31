@@ -34,8 +34,6 @@ public class RobotAutonomous extends LinearOpMode {
     private static final String LABEL_SECOND_ELEMENT = "1";
     public final String vuforiaKey = "AQQmsVn/////AAABmQjk2+3dZE+Tk5oj3L8j0DJvG4NWcCztbIl7BYnLuRUbBBF7ocAhc5kq25SO33annXS4Vn8kAruErc1ETaO+pralkAh4QcvBa9mL4/g+e01KmfAIBGHsJzRIHoravhIvOhdHODQzQu77u3h/hYmD9MSFE+e5d+yQOmWTl5dKZWUwLMiYY4KEXtOMTkP99vK3Jk8lINPpyDyFp6cDrxSpwz7rs9A8HCD8aXiuK8RDRyc3bTEe7aphVTrEzWADQHMwozaegUBlgtnAtlMHa4Ea8Hl21jWRu00haLb9lVNTsIyak5h8ZeJFcGj17AxYQ+iYt6YihHPw2MOrQzFhSKL+NwjWlDYHjlcehVjQ9Xq2d4xo";
 
-
-
     // driving values
     public final int distanceDriveToShootingPosition = 20;
 
@@ -93,12 +91,16 @@ public class RobotAutonomous extends LinearOpMode {
 
         while (robot.frontLeftMotor.isBusy() || robot.backLeftMotor.isBusy() || robot.frontRightMotor.isBusy() || robot.backRightMotor.isBusy()) {  // wait
             // pause in a while loop while the motors are still running
+
+            /*
             telemetry.addData("frontLeftMotor", robot.frontLeftMotor.getCurrentPosition());
             telemetry.addData("frontRightMotor", robot.frontRightMotor.getCurrentPosition());
             telemetry.addData("backLeftMotor", robot.backLeftMotor.getCurrentPosition());
             telemetry.addData("backRightMotor", robot.backRightMotor.getCurrentPosition());
+             */
 
             telemetry.update();
+
         }
 
         robot.frontLeftMotor.setPower(0);  // reset power to 0
@@ -254,19 +256,20 @@ public class RobotAutonomous extends LinearOpMode {
                 int i = 0;
                 for (Recognition recognition : updatedRecognitions) {
 
+                    /*
                     telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
                     telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f", recognition.getLeft(), recognition.getTop());
                     telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f", recognition.getRight(), recognition.getBottom());
-
+                    */
 
                     stackSize = recognition.getLabel();
                     telemetry.update();
-                    return stackSize; //change back to stackval
+                    return stackSize;
                 }
             }
 
         }
-        return stackSize; //change back to stackval
+        return stackSize;
     }
 
     public void shootThreeRings () throws InterruptedException {  // shoots the three rings in the magazine
@@ -374,16 +377,17 @@ public class RobotAutonomous extends LinearOpMode {
         robot.init(hardwareMap);
         //initialize();
 
-        /*
+
         initializeVuforia();
         initTfod();
         tfod.activate();
         tfod.setZoom(2, 2);
         String stackSize = getStackSize();
-         */
+        telemetry.addData("stackSize", stackSize);
 
         waitForStart();
-        driveForward(5.0);
+        driveForward(150.0);
+        driveBackwards(150.0);
 
         //driveForward(distanceDriveToShootingPosition);  // drive forward to get to the shooting location
         //shootThreeRings();  // shoot three rings, same for all three autons

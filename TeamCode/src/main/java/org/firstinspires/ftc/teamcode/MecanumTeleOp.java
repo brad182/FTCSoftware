@@ -57,15 +57,15 @@ public class MecanumTeleOp extends LinearOpMode {
 
             // toggle ninja mode
             if (gamepad1.x) {
-                telemetry.addData("speedPointer", speedPointer);
                 speedPointer = (speedPointer + 1) % 2;  // this way, we just toggle between indexes 0 and 1 in the speed array
+                telemetry.addData("speedPointer", speedPointer);
             }
 
 
             // toggle reversal
             if (gamepad1.b) {
-                telemetry.addData("directionPointer", directionPointer);
                 directionPointer = (directionPointer + 1) % 2;  // toggle the pointer between 0 and 1
+                telemetry.addData("directionPointer", directionPointer);
             }
 
             // shooter

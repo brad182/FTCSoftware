@@ -13,9 +13,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class RobotHardware { // the hardware map
 
+    // autonomous values
+    static final int driveToLineInches = 48;
+
     // final values
     static final double pusherResetPosition = 1.0;
-    static final double pusherPushPosition = 0.0;
+    static final double pusherPushPosition = 0.4;
 
     static final double claw1InitialPosition = 1.0;
     static final double claw2InitialPosition = 1.0;
@@ -64,7 +67,7 @@ public class RobotHardware { // the hardware map
 
         // back right motor
         backRightMotor = hwMap.get(DcMotor.class, "backRightMotor");
-        backRightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        backRightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightMotor.setPower(0.0);
 
