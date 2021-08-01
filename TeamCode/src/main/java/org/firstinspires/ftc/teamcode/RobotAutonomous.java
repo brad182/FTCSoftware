@@ -236,8 +236,6 @@ public class RobotAutonomous extends LinearOpMode {
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
     }
 
-
-
     private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
@@ -378,7 +376,7 @@ public class RobotAutonomous extends LinearOpMode {
         robot.init(hardwareMap);
         //initialize();
 
-        /*
+
         initializeVuforia();
         initTfod();
         tfod.activate();
@@ -387,7 +385,7 @@ public class RobotAutonomous extends LinearOpMode {
 
         telemetry.addData("stackSize", stackSize);
         telemetry.update();
-         */
+
 
         waitForStart();
 
