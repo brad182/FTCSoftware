@@ -148,6 +148,7 @@ public class RobotAutonomous extends LinearOpMode {
      going in opposite directions and outwards, the robot goes
      to the right
      */
+
     public void strafeRight (double inches) {  // given a distance, strafe the robot to the right
         robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  // reset encoders to zero
         robot.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -159,8 +160,8 @@ public class RobotAutonomous extends LinearOpMode {
         int encoderDrive = (int) (rotationsNeeded * ticksPerRevolution);  // calculate the total ticks, cast to int
 
         // the front and the back are going in opposite directions and outwards, will go right
-        robot.frontLeftMotor.setTargetPosition(-encoderDrive);  // set the target position
-        robot.backLeftMotor.setTargetPosition(encoderDrive);
+        robot.frontLeftMotor.setTargetPosition(encoderDrive);  // set the target position
+        robot.backLeftMotor.setTargetPosition(-encoderDrive);
         robot.frontRightMotor.setTargetPosition(-encoderDrive);
         robot.backRightMotor.setTargetPosition(encoderDrive);
 
@@ -188,7 +189,7 @@ public class RobotAutonomous extends LinearOpMode {
      going in opposite directions and inwards, the robot goes
      to the left
      */
-    public void strafeLeft (double inches) {  // given a distance, strfe the robot to the left
+    public void strafeLeft (double inches) {  // given a distance, strafe the robot to the left by that much
         robot.frontLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);  // reset encoders to zero
         robot.backLeftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.frontRightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -196,11 +197,11 @@ public class RobotAutonomous extends LinearOpMode {
 
         double circumference = Math.PI * wheelDiameter;
         double rotationsNeeded = inches / circumference;  // calculate the rotations needed based on the circumference
-        int encoderDrive = (int)(rotationsNeeded * ticksPerRevolution);  // calculate the total ticks, cast to int
+        int encoderDrive = (int) (rotationsNeeded * ticksPerRevolution);  // calculate the total ticks, cast to int
 
         // the front and the back motors are going in opposite directions and inwards, will go left
-        robot.frontLeftMotor.setTargetPosition(encoderDrive);  // set the target position
-        robot.backLeftMotor.setTargetPosition(-encoderDrive);
+        robot.frontLeftMotor.setTargetPosition(-encoderDrive);  // set the target position
+        robot.backLeftMotor.setTargetPosition(encoderDrive);
         robot.frontRightMotor.setTargetPosition(encoderDrive);
         robot.backRightMotor.setTargetPosition(-encoderDrive);
 
@@ -245,7 +246,7 @@ public class RobotAutonomous extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
 
-    public String getStackSize(){
+    public String getStackSize() {
         String stackSize = "0";
         if (tfod != null) {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
@@ -377,17 +378,22 @@ public class RobotAutonomous extends LinearOpMode {
         robot.init(hardwareMap);
         //initialize();
 
-
+        /*
         initializeVuforia();
         initTfod();
         tfod.activate();
         tfod.setZoom(2, 2);
         String stackSize = getStackSize();
+
         telemetry.addData("stackSize", stackSize);
+        telemetry.update();
+         */
 
         waitForStart();
-        driveForward(150.0);
-        driveBackwards(150.0);
+
+        driveForward(52.0);
+        shootThreeRings();
+        driveForward(12.0);
 
         //driveForward(distanceDriveToShootingPosition);  // drive forward to get to the shooting location
         //shootThreeRings();  // shoot three rings, same for all three autons
@@ -404,6 +410,4 @@ public class RobotAutonomous extends LinearOpMode {
         }
         */
     }
-
-
 }
